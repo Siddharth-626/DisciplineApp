@@ -4,6 +4,8 @@ import 'package:discipline_app/core/theme/app_theme.dart';
 import 'package:discipline_app/features/auth/presentation/login_screen.dart';
 import 'package:discipline_app/features/auth/presentation/register_screen.dart';
 import 'package:discipline_app/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:discipline_app/features/tasks/domain/task_model.dart';
+import 'package:discipline_app/features/tasks/presentation/task_form_screen.dart';
 import 'package:discipline_app/features/tasks/presentation/tasks_screen.dart';
 import 'package:discipline_app/services/firebase_initializer.dart';
 import 'package:discipline_app/widgets/state_widgets.dart';
@@ -41,7 +43,16 @@ class DisciplineApp extends ConsumerWidget {
       routes: [
         GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
         GoRoute(path: '/register', builder: (_, __) => const RegisterScreen()),
-        GoRoute(path: '/tasks', builder: (_, __) => const TasksScreen()),
+        GoRoute(
+          path: '/tasks',
+          builder: (_, __) => const TasksScreen(),
+          routes: [
+            GoRoute(
+              path: 'details',
+              builder: (context, state) => TaskFormScreen(task: state.extra as TaskModel?),
+            ),
+          ],
+        ),
         GoRoute(path: '/dashboard', builder: (_, __) => const DashboardScreen()),
       ],
     );

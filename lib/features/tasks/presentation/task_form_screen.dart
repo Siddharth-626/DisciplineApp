@@ -3,6 +3,7 @@ import 'package:discipline_app/features/tasks/domain/task_model.dart';
 import 'package:discipline_app/features/tasks/presentation/task_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
 class TaskFormScreen extends ConsumerStatefulWidget {
@@ -114,13 +115,19 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
             Wrap(
               spacing: 8,
               children: [
-                for (final color in [Colors.indigo, Colors.teal, Colors.orange, Colors.pink])
+                for (final color in [
+                  (Colors.indigo, 'Indigo'),
+                  (Colors.teal, 'Teal'),
+                  (Colors.orange, 'Orange'),
+                  (Colors.pink, 'Pink'),
+                ])
                   ChoiceChip(
                     label: const Text(''),
-                    selectedColor: color,
-                    selected: _color == color.value,
-                    onSelected: (_) => setState(() => _color = color.value),
-                    avatar: CircleAvatar(backgroundColor: color),
+                    tooltip: 'Select ${color.$2} color',
+                    selectedColor: color.$1,
+                    selected: _color == color.$1.value,
+                    onSelected: (_) => setState(() => _color = color.$1.value),
+                    avatar: CircleAvatar(backgroundColor: color.$1),
                   ),
               ],
             ),
@@ -149,7 +156,7 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
                   createdAt: widget.task?.createdAt ?? now,
                 );
                 await ref.read(taskControllerProvider.notifier).saveTask(task);
-                if (mounted) Navigator.pop(context);
+                if (mounted) context.pop();
               },
               child: const Text('Save Task'),
             ),
