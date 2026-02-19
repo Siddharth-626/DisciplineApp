@@ -2,7 +2,6 @@ import 'package:discipline_app/core/providers.dart';
 import 'package:discipline_app/features/auth/presentation/auth_controller.dart';
 import 'package:discipline_app/features/tasks/domain/task_log_model.dart';
 import 'package:discipline_app/features/tasks/presentation/task_controller.dart';
-import 'package:discipline_app/features/tasks/presentation/task_form_screen.dart';
 import 'package:discipline_app/widgets/state_widgets.dart';
 import 'package:discipline_app/widgets/task_card.dart';
 import 'package:flutter/material.dart';
@@ -23,10 +22,12 @@ class TasksScreen extends ConsumerWidget {
           IconButton(
             onPressed: () => context.push('/dashboard'),
             icon: const Icon(Icons.analytics_outlined),
+            tooltip: 'View Analytics',
           ),
           IconButton(
             onPressed: () => ref.read(authControllerProvider.notifier).signOut(),
             icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
           ),
         ],
       ),
@@ -44,11 +45,29 @@ class TasksScreen extends ConsumerWidget {
                 children: [
                   TaskCard(
                     task: task,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => TaskFormScreen(task: task)),
-                    ),
-                    onDelete: () => ref.read(taskControllerProvider.notifier).deleteTask(task.id),
+                    onTap: () => context.push('/tasks/details', extra: task),
+                    onDelete: () async {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Delete Task'),
+                          content: const Text('Are you sure you want to delete this task?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirmed == true) {
+                        ref.read(taskControllerProvider.notifier).deleteTask(task.id);
+                      }
+                    },
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -85,10 +104,8 @@ class TasksScreen extends ConsumerWidget {
         loading: AppLoading.new,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const TaskFormScreen()),
-        ),
+        onPressed: () => context.push('/tasks/details'),
+        tooltip: 'Add New Task',
         child: const Icon(Icons.add),
       ),
     );
