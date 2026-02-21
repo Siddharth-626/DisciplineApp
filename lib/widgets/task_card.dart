@@ -24,7 +24,11 @@ class TaskCard extends StatelessWidget {
         subtitle: Text(
           '${task.category} • ${DateFormat.Hm().format(task.startTime)} - ${DateFormat.Hm().format(task.endTime)}',
         ),
-        trailing: IconButton(icon: const Icon(Icons.delete_outline), onPressed: onDelete),
+        trailing: IconButton(
+          icon: const Icon(Icons.delete_outline),
+          tooltip: 'Delete Task',
+          onPressed: onDelete,
+        ),
       ),
     );
   }
