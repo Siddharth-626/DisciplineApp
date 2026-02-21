@@ -47,12 +47,12 @@ class DashboardMetrics {
       final hits = taskLogs.where((log) => log.status == TaskStatus.completed).length;
       final total = taskLogs.length;
       categoryPerformance[task.category] =
-          ((categoryPerformance[task.category] ?? 0) + (total == 0 ? 0 : hits / total));
+          ((categoryPerformance[task.category] ?? 0.0) + (total == 0 ? 0.0 : hits / total));
     }
 
     final streakStats = _calculateStreaks(logs);
     final total = completed + skipped + missed;
-    final productivity = total == 0 ? 0 : (completed / total) * 100;
+    final productivity = total == 0 ? 0.0 : (completed / total) * 100.0;
 
     return DashboardMetrics(
       completed: completed,

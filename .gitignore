@@ -1,0 +1,17 @@
+# Flutter/Dart generated files
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+pubspec.lock
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+
+# Firebase configuration (if sensitive)
+# lib/services/firebase_options.dart
