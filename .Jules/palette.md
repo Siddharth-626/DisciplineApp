@@ -1,0 +1,3 @@
+## 2026-02-22 - [Flutter UI/Accessibility Refinement]
+**Learning:** In Flutter 3.33+, `DropdownButtonFormField` deprecates `value` in favor of `initialValue` for setting the default selection. Additionally, `Color.value` is deprecated in favor of `Color.toARGB32()`. For accessibility, icon-only buttons like `IconButton` or `FloatingActionButton` MUST have tooltips, and `ChoiceChip` widgets used for color selection must have meaningful labels and tooltips instead of empty strings.
+**Action:** Always check for these deprecations using `flutter analyze` and ensure all interactive elements have descriptive tooltips or labels for screen readers.
