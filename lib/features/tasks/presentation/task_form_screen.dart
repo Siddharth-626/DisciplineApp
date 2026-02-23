@@ -20,7 +20,7 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
   final _description = TextEditingController();
   late String _category;
   late String _recurring;
-  var _color = Colors.indigo.value;
+  var _color = Colors.indigo.toARGB32();
   var _reminder = false;
   TimeOfDay _start = const TimeOfDay(hour: 8, minute: 0);
   TimeOfDay _end = const TimeOfDay(hour: 9, minute: 0);
@@ -33,7 +33,7 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
     _description.text = task?.description ?? '';
     _category = task?.category ?? AppConstants.taskCategories.first;
     _recurring = task?.recurringType ?? AppConstants.recurringTypes.first;
-    _color = task?.color ?? Colors.indigo.value;
+    _color = task?.color ?? Colors.indigo.toARGB32();
     _reminder = task?.reminderEnabled ?? false;
     if (task != null) {
       _start = TimeOfDay.fromDateTime(task.startTime);
@@ -114,13 +114,19 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
             Wrap(
               spacing: 8,
               children: [
-                for (final color in [Colors.indigo, Colors.teal, Colors.orange, Colors.pink])
+                for (final (color, name) in [
+                  (Colors.indigo, 'Indigo'),
+                  (Colors.teal, 'Teal'),
+                  (Colors.orange, 'Orange'),
+                  (Colors.pink, 'Pink'),
+                ])
                   ChoiceChip(
-                    label: const Text(''),
-                    selectedColor: color,
-                    selected: _color == color.value,
-                    onSelected: (_) => setState(() => _color = color.value),
-                    avatar: CircleAvatar(backgroundColor: color),
+                    label: Text(name),
+                    selected: _color == color.toARGB32(),
+                    onSelected: (selected) {
+                      if (selected) setState(() => _color = color.toARGB32());
+                    },
+                    tooltip: 'Select $name color',
                   ),
               ],
             ),
@@ -149,7 +155,7 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
                   createdAt: widget.task?.createdAt ?? now,
                 );
                 await ref.read(taskControllerProvider.notifier).saveTask(task);
-                if (mounted) Navigator.pop(context);
+                if (context.mounted) Navigator.pop(context);
               },
               child: const Text('Save Task'),
             ),
