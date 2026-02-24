@@ -20,7 +20,7 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
   final _description = TextEditingController();
   late String _category;
   late String _recurring;
-  var _color = Colors.indigo.value;
+  var _color = Colors.indigo.toARGB32();
   var _reminder = false;
   TimeOfDay _start = const TimeOfDay(hour: 8, minute: 0);
   TimeOfDay _end = const TimeOfDay(hour: 9, minute: 0);
@@ -33,7 +33,7 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
     _description.text = task?.description ?? '';
     _category = task?.category ?? AppConstants.taskCategories.first;
     _recurring = task?.recurringType ?? AppConstants.recurringTypes.first;
-    _color = task?.color ?? Colors.indigo.value;
+    _color = task?.color ?? Colors.indigo.toARGB32();
     _reminder = task?.reminderEnabled ?? false;
     if (task != null) {
       _start = TimeOfDay.fromDateTime(task.startTime);
@@ -50,6 +50,8 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(taskControllerProvider).isLoading;
+
     return Scaffold(
       appBar: AppBar(title: Text(widget.task == null ? 'Create Task' : 'Edit Task')),
       body: Form(
@@ -114,13 +116,19 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
             Wrap(
               spacing: 8,
               children: [
-                for (final color in [Colors.indigo, Colors.teal, Colors.orange, Colors.pink])
+                for (final entry in {
+                  'Indigo': Colors.indigo,
+                  'Teal': Colors.teal,
+                  'Orange': Colors.orange,
+                  'Pink': Colors.pink,
+                }.entries)
                   ChoiceChip(
-                    label: const Text(''),
-                    selectedColor: color,
-                    selected: _color == color.value,
-                    onSelected: (_) => setState(() => _color = color.value),
-                    avatar: CircleAvatar(backgroundColor: color),
+                    label: Text(entry.key),
+                    selectedColor: entry.value.withValues(alpha: 0.3),
+                    selected: _color == entry.value.toARGB32(),
+                    onSelected: (_) => setState(() => _color = entry.value.toARGB32()),
+                    avatar: CircleAvatar(backgroundColor: entry.value, radius: 10),
+                    tooltip: 'Select ${entry.key} color',
                   ),
               ],
             ),
@@ -131,7 +139,9 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
             ),
             const SizedBox(height: 16),
             FilledButton(
-              onPressed: () async {
+              onPressed: isLoading
+                  ? null
+                  : () async {
                 if (!_formKey.currentState!.validate()) return;
                 final now = DateTime.now();
                 final startTime = DateTime(now.year, now.month, now.day, _start.hour, _start.minute);
@@ -151,7 +161,16 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
                 await ref.read(taskControllerProvider.notifier).saveTask(task);
                 if (mounted) Navigator.pop(context);
               },
-              child: const Text('Save Task'),
+              child: isLoading
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Text('Save Task'),
             ),
           ],
         ),
