@@ -52,7 +52,7 @@ class DashboardMetrics {
 
     final streakStats = _calculateStreaks(logs);
     final total = completed + skipped + missed;
-    final productivity = total == 0 ? 0 : (completed / total) * 100;
+    final productivity = total == 0 ? 0.0 : (completed / total) * 100;
 
     return DashboardMetrics(
       completed: completed,
