@@ -12,6 +12,29 @@ import 'package:go_router/go_router.dart';
 class TasksScreen extends ConsumerWidget {
   const TasksScreen({super.key});
 
+  Future<bool?> _showDeleteConfirmation(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Task'),
+        content: const Text(
+          'Are you sure you want to delete this task? This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tasksAsync = ref.watch(tasksProvider);
@@ -23,10 +46,12 @@ class TasksScreen extends ConsumerWidget {
           IconButton(
             onPressed: () => context.push('/dashboard'),
             icon: const Icon(Icons.analytics_outlined),
+            tooltip: 'View Dashboard',
           ),
           IconButton(
             onPressed: () => ref.read(authControllerProvider.notifier).signOut(),
             icon: const Icon(Icons.logout),
+            tooltip: 'Log out',
           ),
         ],
       ),
@@ -48,7 +73,12 @@ class TasksScreen extends ConsumerWidget {
                       context,
                       MaterialPageRoute(builder: (_) => TaskFormScreen(task: task)),
                     ),
-                    onDelete: () => ref.read(taskControllerProvider.notifier).deleteTask(task.id),
+                    onDelete: () async {
+                      final confirmed = await _showDeleteConfirmation(context);
+                      if (confirmed == true && context.mounted) {
+                        ref.read(taskControllerProvider.notifier).deleteTask(task.id);
+                      }
+                    },
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -89,6 +119,7 @@ class TasksScreen extends ConsumerWidget {
           context,
           MaterialPageRoute(builder: (_) => const TaskFormScreen()),
         ),
+        tooltip: 'Add new task',
         child: const Icon(Icons.add),
       ),
     );
