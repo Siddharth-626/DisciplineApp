@@ -1,0 +1,11 @@
+# Miscellaneous
+*.log
+*.pubcache
+*.flutter-plugins*
+*.flutter-plugins-dependencies
+.dart_tool/
+build/
+.jules/
+.idea/
+.vscode/
+.DS_Store
