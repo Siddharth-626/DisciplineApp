@@ -114,13 +114,19 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
             Wrap(
               spacing: 8,
               children: [
-                for (final color in [Colors.indigo, Colors.teal, Colors.orange, Colors.pink])
+                for (final entry in {
+                  Colors.indigo: 'Indigo',
+                  Colors.teal: 'Teal',
+                  Colors.orange: 'Orange',
+                  Colors.pink: 'Pink',
+                }.entries)
                   ChoiceChip(
-                    label: const Text(''),
-                    selectedColor: color,
-                    selected: _color == color.value,
-                    onSelected: (_) => setState(() => _color = color.value),
-                    avatar: CircleAvatar(backgroundColor: color),
+                    label: Text(entry.value),
+                    selectedColor: entry.key,
+                    selected: _color == entry.key.value,
+                    onSelected: (_) => setState(() => _color = entry.key.value),
+                    avatar: CircleAvatar(backgroundColor: entry.key),
+                    tooltip: 'Select ${entry.value} color',
                   ),
               ],
             ),
