@@ -61,7 +61,7 @@ class DashboardMetrics {
       categoryPerformance: categoryPerformance,
       currentStreak: streakStats.$1,
       longestStreak: streakStats.$2,
-      productivityScore: productivity,
+      productivityScore: productivity.toDouble(),
       monthlySummary:
           'Completed $completed tasks this month, skipped $skipped and missed $missed.',
     );
