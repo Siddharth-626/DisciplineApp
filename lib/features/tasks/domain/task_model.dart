@@ -77,7 +77,7 @@ class TaskModel {
       endTime: (map['endTime'] as Timestamp?)?.toDate() ?? DateTime.now(),
       recurringType: map['recurringType'] as String? ?? 'daily',
       category: map['category'] as String? ?? 'Personal',
-      color: map['color'] as int? ?? Colors.indigo.value,
+      color: map['color'] as int? ?? Colors.indigo.toARGB32(),
       reminderEnabled: map['reminderEnabled'] as bool? ?? false,
       createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
