@@ -22,10 +22,12 @@ class TasksScreen extends ConsumerWidget {
         actions: [
           IconButton(
             onPressed: () => context.push('/dashboard'),
+            tooltip: 'Analytics',
             icon: const Icon(Icons.analytics_outlined),
           ),
           IconButton(
             onPressed: () => ref.read(authControllerProvider.notifier).signOut(),
+            tooltip: 'Logout',
             icon: const Icon(Icons.logout),
           ),
         ],
@@ -89,6 +91,7 @@ class TasksScreen extends ConsumerWidget {
           context,
           MaterialPageRoute(builder: (_) => const TaskFormScreen()),
         ),
+        tooltip: 'Add Task',
         child: const Icon(Icons.add),
       ),
     );
