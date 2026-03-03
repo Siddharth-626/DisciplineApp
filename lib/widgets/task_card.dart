@@ -24,7 +24,32 @@ class TaskCard extends StatelessWidget {
         subtitle: Text(
           '${task.category} • ${DateFormat.Hm().format(task.startTime)} - ${DateFormat.Hm().format(task.endTime)}',
         ),
-        trailing: IconButton(icon: const Icon(Icons.delete_outline), onPressed: onDelete),
+        trailing: IconButton(
+          icon: const Icon(Icons.delete_outline),
+          tooltip: 'Delete Task',
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('Delete Task'),
+                content: const Text('Are you sure you want to delete this task?'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      onDelete();
+                    },
+                    child: const Text('Delete'),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
