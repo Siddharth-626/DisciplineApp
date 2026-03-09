@@ -1,0 +1,3 @@
+## 2026-03-09 - Enhanced Task Deletion Safety and Action Accessibility
+**Learning:** Destructive actions like task deletion should always require confirmation to prevent accidental data loss. Additionally, icon-only buttons (common in Flutter's AppBar and ListTiles) must have tooltips for both screen reader accessibility and to provide context for visual users. Selection widgets like ChoiceChips with empty labels should be supplemented with tooltips or meaningful labels to satisfy accessibility requirements.
+**Action:** Always include an AlertDialog for delete operations and ensure all IconButtons have a descriptive tooltip property.
