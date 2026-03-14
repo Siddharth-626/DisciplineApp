@@ -14,6 +14,35 @@ class TaskCard extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onDelete;
 
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Task?'),
+        content: const Text(
+          'Are you sure you want to delete this task? This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    ).then((confirmed) {
+      if (confirmed == true) {
+        onDelete();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -24,7 +53,11 @@ class TaskCard extends StatelessWidget {
         subtitle: Text(
           '${task.category} • ${DateFormat.Hm().format(task.startTime)} - ${DateFormat.Hm().format(task.endTime)}',
         ),
-        trailing: IconButton(icon: const Icon(Icons.delete_outline), onPressed: onDelete),
+        trailing: IconButton(
+          tooltip: 'Delete task',
+          icon: const Icon(Icons.delete_outline),
+          onPressed: () => _showDeleteConfirmation(context),
+        ),
       ),
     );
   }
