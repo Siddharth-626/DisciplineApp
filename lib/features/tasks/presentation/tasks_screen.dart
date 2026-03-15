@@ -48,7 +48,31 @@ class TasksScreen extends ConsumerWidget {
                       context,
                       MaterialPageRoute(builder: (_) => TaskFormScreen(task: task)),
                     ),
-                    onDelete: () => ref.read(taskControllerProvider.notifier).deleteTask(task.id),
+                    onDelete: () async {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Delete Task'),
+                          content: Text('Are you sure you want to delete "${task.title}"?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              style: TextButton.styleFrom(
+                                foregroundColor: Theme.of(context).colorScheme.error,
+                              ),
+                              child: const Text('Delete'),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirmed == true) {
+                        ref.read(taskControllerProvider.notifier).deleteTask(task.id);
+                      }
+                    },
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
