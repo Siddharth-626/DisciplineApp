@@ -12,6 +12,33 @@ import 'package:go_router/go_router.dart';
 class TasksScreen extends ConsumerWidget {
   const TasksScreen({super.key});
 
+  Future<void> _showDeleteConfirmation(BuildContext context, WidgetRef ref, String taskId) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Task'),
+        content: const Text('Are you sure you want to delete this task? This action cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await ref.read(taskControllerProvider.notifier).deleteTask(taskId);
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tasksAsync = ref.watch(tasksProvider);
@@ -48,7 +75,7 @@ class TasksScreen extends ConsumerWidget {
                       context,
                       MaterialPageRoute(builder: (_) => TaskFormScreen(task: task)),
                     ),
-                    onDelete: () => ref.read(taskControllerProvider.notifier).deleteTask(task.id),
+                    onDelete: () => _showDeleteConfirmation(context, ref, task.id),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
